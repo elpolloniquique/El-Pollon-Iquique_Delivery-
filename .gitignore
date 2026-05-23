@@ -1,0 +1,9 @@
+# Secretos locales — NUNCA subir
+js/supabase/config.local.js
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.local
