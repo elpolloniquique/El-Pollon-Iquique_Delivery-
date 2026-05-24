@@ -118,9 +118,7 @@
   <script src="js/utils.js"></script>
   <script>
     (async function () {
-      const cfg = window.SUPABASE_CONFIG || {};
       const emailInput = document.getElementById('login-email');
-      if (cfg.adminEmail) emailInput.value = cfg.adminEmail;
 
       const ok = await window.PollonAuth.restoreSession();
       if (ok?.activo) {
