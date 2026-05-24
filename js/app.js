@@ -1588,7 +1588,7 @@ function toggleMenuDdMobile() {
 }
 
 function usesPcDropdownMenu() {
-  return window.matchMedia('(min-width: 1024px)').matches;
+  return window.matchMedia('(min-width: 768px)').matches;
 }
 
 if (menuDdBtnMobile && menuDdPanelMobile) {
