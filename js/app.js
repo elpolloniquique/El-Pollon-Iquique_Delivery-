@@ -1163,8 +1163,9 @@ function openSidebar() {
   if (sidebarMenu) sidebarMenu.style.transform = 'translateX(0)';
   if (sidebarOverlay) sidebarOverlay.classList.remove('hidden');
   if (hamburgerBtn) hamburgerBtn.setAttribute('aria-expanded', 'true');
-  if (menuDdBtnMobile) menuDdBtnMobile.setAttribute('aria-expanded', 'true');
+  if (isDesktopCompact() && menuDdBtnMobile) menuDdBtnMobile.setAttribute('aria-expanded', 'true');
   if (menuDdPanelMobile) menuDdPanelMobile.classList.add('hidden');
+  if (menuDdBtnMobile && isPcFullDesktop()) menuDdBtnMobile.setAttribute('aria-expanded', 'false');
   document.body.classList.add('sidebar-open');
   document.body.style.overflow = 'hidden';
 }
@@ -1172,7 +1173,7 @@ function closeSidebarMenu() {
   if (sidebarMenu) sidebarMenu.style.transform = 'translateX(-100%)';
   if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
   if (hamburgerBtn) hamburgerBtn.setAttribute('aria-expanded', 'false');
-  if (menuDdBtnMobile) menuDdBtnMobile.setAttribute('aria-expanded', 'false');
+  if (menuDdBtnMobile && !isPcFullDesktop()) menuDdBtnMobile.setAttribute('aria-expanded', 'false');
   document.body.classList.remove('sidebar-open');
   document.body.style.overflow = '';
 }
@@ -1182,6 +1183,12 @@ function isSidebarOpen() {
 function toggleSidebar() {
   if (isSidebarOpen()) closeSidebarMenu();
   else openSidebar();
+}
+function isDesktopCompact() {
+  return window.matchMedia('(min-width: 1024px) and (max-width: 1366px)').matches;
+}
+function isPcFullDesktop() {
+  return window.matchMedia('(min-width: 1367px)').matches;
 }
 function isDesktopHeader() {
   return window.matchMedia('(min-width: 1024px)').matches;
@@ -1513,6 +1520,7 @@ if (menuDdBtn && menuDdPanel){
 // ===== DROPDOWN MENÚ (PC grande) / Sidebar (PC pequeño) =====
 function openMenuDdMobile(){
   if (!menuDdPanelMobile || !menuDdBtnMobile) return;
+  closeSidebarMenu();
   menuDdPanelMobile.classList.remove('hidden');
   menuDdBtnMobile.setAttribute('aria-expanded', 'true');
 }
@@ -1521,21 +1529,27 @@ function closeMenuDdMobile(){
   menuDdPanelMobile.classList.add('hidden');
   menuDdBtnMobile.setAttribute('aria-expanded', 'false');
 }
+function toggleMenuDdMobile() {
+  if (!menuDdPanelMobile) return;
+  const isOpen = !menuDdPanelMobile.classList.contains('hidden');
+  if (isOpen) closeMenuDdMobile();
+  else openMenuDdMobile();
+}
 
 if (menuDdBtnMobile && menuDdPanelMobile){
-  menuDdBtnMobile.setAttribute('aria-haspopup', 'dialog');
-  menuDdBtnMobile.setAttribute('aria-controls', 'sidebar-menu');
-
   menuDdBtnMobile.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isDesktopHeader()) {
+    if (isPcFullDesktop()) {
+      toggleMenuDdMobile();
+      return;
+    }
+    if (isDesktopCompact()) {
+      closeMenuDdMobile();
       toggleSidebar();
       return;
     }
-    const isOpen = !menuDdPanelMobile.classList.contains('hidden');
-    if (isOpen) closeMenuDdMobile();
-    else openMenuDdMobile();
+    toggleMenuDdMobile();
   });
 
   document.addEventListener('click', (e) => {
