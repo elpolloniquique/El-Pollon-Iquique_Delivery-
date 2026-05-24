@@ -30,7 +30,7 @@
 }
 
 .header-pollon--ref.header-fijo {
-  z-index: 100;
+  z-index: 110;
 }
 
 body.pollon-body {
@@ -355,25 +355,31 @@ body.pollon-body {
   z-index: 1;
 }
 
-/* Botón carrito blanco — referencia exacta */
-.header-pollon--ref #view-cart-desktop.btn-cart-pro,
-.header-pollon--ref .header-btn-pedido {
-  background: var(--pollon-white) !important;
-  color: var(--pollon-red) !important;
-  border: none !important;
-  border-radius: 999px !important;
-  padding: 0.55rem 1rem 0.55rem 0.85rem !important;
-  font-size: 0.75rem !important;
-  font-weight: 800 !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
-  transition: transform 0.22s ease, box-shadow 0.22s ease !important;
-  gap: 0.45rem;
-}
+/* Botón carrito pill — solo PC compacto (no aplica en PC grande 1367+) */
+@media (max-width: 1366px) {
+  .header-pollon--ref #view-cart-desktop.btn-cart-pro,
+  .header-pollon--ref .header-btn-pedido,
+  .header-pollon--ref .header-cart-pc {
+    background: var(--pollon-white) !important;
+    color: var(--pollon-red) !important;
+    border: none !important;
+    border-radius: 999px !important;
+    padding: 0.55rem 1rem 0.55rem 0.85rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 800 !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+    transition: transform 0.22s ease, box-shadow 0.22s ease !important;
+    gap: 0.45rem;
+    display: inline-flex;
+    align-items: center;
+  }
 
-.header-pollon--ref #view-cart-desktop.btn-cart-pro:hover {
-  background: var(--pollon-white) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28) !important;
+  .header-pollon--ref #view-cart-desktop.btn-cart-pro:hover,
+  .header-pollon--ref .header-cart-pc:hover {
+    background: var(--pollon-white) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28) !important;
+  }
 }
 
 .header-cart-icon-red {
@@ -444,10 +450,35 @@ body.pollon-body {
   color: var(--pollon-white);
   font-size: 0.65rem;
   line-height: 1;
+  transition: transform 0.25s ease;
 }
 
 .header-pollon--ref .menu-dd-wrap {
   position: relative;
+  z-index: 20;
+}
+
+/* En PC el botón MENÚ abre sidebar — ocultar dropdown */
+@media (min-width: 1024px) {
+  .header-pollon--ref #menu-dd-panel-mobile {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .header-pollon--ref .menu-dd-btn.header-menu-hamburger-pc {
+    cursor: pointer;
+    position: relative;
+    z-index: 21;
+  }
+
+  .header-pollon--ref .menu-dd-btn.header-menu-hamburger-pc[aria-expanded="true"] .header-menu-circle {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+  }
+
+  .header-pollon--ref .menu-dd-btn.header-menu-hamburger-pc[aria-expanded="true"] .menu-dd-caret {
+    transform: rotate(180deg);
+  }
 }
 
 .header-pollon--ref .menu-dd-panel:not(.hidden) {
@@ -751,14 +782,16 @@ body.pollon-body {
   display: none;
 }
 
-#sidebar-overlay {
-  background: rgba(13, 13, 13, 0.65) !important;
-  backdrop-filter: blur(6px);
-  transition: opacity 0.3s ease;
-}
-
 #sidebar-menu {
   transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  z-index: 120 !important;
+}
+
+#sidebar-overlay {
+  background: rgba(8, 8, 8, 0.72) !important;
+  backdrop-filter: blur(6px);
+  transition: opacity 0.3s ease;
+  z-index: 115 !important;
 }
 
 .sidebar-pollon .btn-cart-sidebar,
@@ -841,19 +874,41 @@ body.pollon-body {
   display: none !important;
 }
 
-/* Tablet intermedio: nav más compacto */
-@media (min-width: 1024px) and (max-width: 1280px) {
+/* ===== PC PEQUEÑO: sin barra blanca — negro + rojo unidos ===== */
+@media (min-width: 1024px) and (max-width: 1366px) {
   .header-pollon__shell {
-    grid-template-columns: minmax(180px, 240px) 1fr minmax(300px, auto);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: stretch;
   }
 
-  .header-pollon--ref .header-service-label {
-    font-size: 0.65rem;
+  /* Ocultar zona blanca central */
+  .header-pollon--ref .header-service-nav {
+    display: none !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
-  .header-pollon--ref .header-service-link {
-    max-width: 140px;
-    padding: 0.55rem 0.35rem;
+  /* Negro y rojo se unen con diagonal */
+  .header-pollon__brand {
+    clip-path: polygon(0 0, 100% 0, calc(100% - 22px) 100%, 0 100%);
+    padding-right: 2.25rem;
+    min-width: min(240px, 34vw);
+    flex-shrink: 0;
+    z-index: 4;
+  }
+
+  .header-pollon__actions {
+    clip-path: polygon(22px 0, 100% 0, 100% 100%, 0 100%);
+    margin-left: -22px;
+    flex: 1;
+    min-width: 0;
+    padding: 0 1rem 0 2rem;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    z-index: 3;
   }
 
   .header-phone-schedule {
@@ -863,26 +918,368 @@ body.pollon-body {
   .header-login-sub {
     display: none;
   }
+}
 
-  .header-pollon__actions {
-    gap: 0.55rem;
-    padding: 0 0.85rem 0 1.5rem;
+@media (min-width: 1024px) and (max-width: 1200px) {
+  .header-phone-text {
+    display: none;
+  }
+
+  .header-pollon__brand .header-titulo-logo {
+    font-size: 1rem !important;
+  }
+
+  .header-pollon__brand .logo {
+    width: 46px;
+    height: 46px;
+  }
+
+  .header-pollon--ref .header-cart-pc {
+    padding: 0.55rem 0.7rem !important;
+  }
+
+  .header-cart-text-sr {
+    font-size: 0.68rem;
+  }
+}
+
+@media (min-width: 1201px) and (max-width: 1280px) {
+  .header-pollon--ref .header-service-label {
+    font-size: 0.65rem;
+  }
+
+  .header-phone-schedule {
+    display: none;
+  }
+
+  .header-login-sub {
+    display: none;
   }
 }
 
 @media (min-width: 1281px) and (max-width: 1366px) {
-  .header-pollon__shell {
-    grid-template-columns: minmax(210px, 260px) 1fr minmax(340px, auto);
-  }
-
-  .header-pollon--ref .header-service-label {
-    font-size: 0.68rem;
+  .header-pollon__brand {
+    min-width: min(260px, 32vw);
   }
 }
 
 @media (min-width: 1367px) and (max-width: 1440px) {
   .header-pollon__shell {
-    grid-template-columns: minmax(220px, 270px) 1fr minmax(360px, auto);
+    grid-template-columns: minmax(240px, 24%) 1fr minmax(520px, auto);
+  }
+
+  .header-pollon--ref .header-service-nav {
+    display: flex !important;
+  }
+}
+
+/* =============================================================================
+   PASO 1 — PC GRANDE (1367px+): diseño referencia exacta
+   Negro | Blanco | Rojo con cortes diagonales
+   ============================================================================= */
+@media (min-width: 1367px) {
+  :root {
+    --header-h-desktop: 76px;
+    --header-diagonal: 32px;
+  }
+
+  .header-pollon__shell {
+    display: grid;
+    grid-template-columns: minmax(260px, 22%) 1fr minmax(540px, auto);
+    align-items: stretch;
+    min-height: var(--header-h-desktop);
+    max-width: 100%;
+  }
+
+  /* —— Negro —— */
+  .header-pollon__brand {
+    background: var(--pollon-black);
+    clip-path: polygon(0 0, 100% 0, calc(100% - var(--header-diagonal)) 100%, 0 100%);
+    padding: 0 2.5rem 0 1.5rem;
+  }
+
+  .header-pollon__brand::after {
+    display: none;
+  }
+
+  .header-pollon__brand .logo {
+    width: 56px;
+    height: 56px;
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    box-shadow: none;
+  }
+
+  .header-pollon__brand .header-titulo-logo {
+    font-size: 1.35rem !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .header-pollon__brand .header-sub {
+    font-size: 0.95rem !important;
+    margin-top: 0 !important;
+  }
+
+  /* —— Centro blanco puro —— */
+  .header-pollon--ref .header-service-nav {
+    display: flex !important;
+    background: var(--pollon-white);
+    box-shadow: none;
+  }
+
+  .header-pollon--ref .header-service-link {
+    flex: 1;
+    max-width: none;
+    min-height: var(--header-h-desktop);
+    padding: 0.5rem 0.75rem;
+    gap: 0.4rem;
+  }
+
+  .header-pollon--ref .header-service-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--pollon-black);
+    letter-spacing: 0.01em;
+  }
+
+  .header-pollon--ref .header-service-icon svg {
+    width: 26px;
+    height: 26px;
+    stroke-width: 1.75;
+  }
+
+  .header-nav-divider {
+    height: 42px;
+    width: 1px;
+    background: #e8e8e8;
+  }
+
+  .header-pollon--ref .header-service-link--active::before {
+    height: 3px;
+    width: 65%;
+    background: var(--pollon-red);
+    box-shadow: none;
+  }
+
+  /* —— Rojo sólido —— */
+  .header-pollon__actions {
+    background: var(--pollon-red);
+    clip-path: polygon(var(--header-diagonal) 0, 100% 0, 100% 100%, 0 100%);
+    margin-left: calc(var(--header-diagonal) * -1);
+    padding: 0 1.75rem 0 calc(1.75rem + var(--header-diagonal));
+    gap: 1.1rem;
+  }
+
+  .header-pollon__actions::before {
+    display: none;
+  }
+
+  .header-phone-block {
+    gap: 0.1rem;
+  }
+
+  .header-pollon--ref .header-phone-link {
+    font-size: 0.85rem;
+    font-weight: 700;
+    gap: 0.55rem;
+  }
+
+  .header-phone-circle {
+    width: 36px;
+    height: 36px;
+    border-width: 2px;
+  }
+
+  .header-phone-schedule {
+    display: block;
+    font-size: 0.62rem;
+    padding-left: 2.85rem;
+    opacity: 0.95;
+  }
+
+  .header-login-title {
+    font-size: 0.85rem;
+  }
+
+  .header-login-sub {
+    font-size: 0.65rem;
+    display: block;
+  }
+
+  /* Carrito: icono blanco + badge circular */
+  .header-pollon--ref .header-cart-pc {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.35rem;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0.35rem !important;
+    box-shadow: none !important;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .header-pollon--ref .header-cart-pc:hover {
+    transform: scale(1.06);
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .header-cart-svg-pc {
+    color: var(--pollon-white);
+    stroke: var(--pollon-white);
+    flex-shrink: 0;
+  }
+
+  .header-cart-text-sr {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  .header-pollon--ref .header-cart-badge-pc {
+    background: var(--pollon-white) !important;
+    color: var(--pollon-red) !important;
+    min-width: 1.35rem;
+    height: 1.35rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    border-radius: 50%;
+    box-shadow: none;
+    padding: 0 4px;
+  }
+
+  /* Separador vertical blanco */
+  .header-action-separator {
+    display: block;
+    width: 1px;
+    height: 38px;
+    background: rgba(255, 255, 255, 0.55);
+    flex-shrink: 0;
+    align-self: center;
+  }
+
+  /* Hamburguesa simple (3 líneas blancas) */
+  .header-pollon--ref .header-menu-hamburger-pc {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    background: transparent !important;
+    border: none !important;
+    padding: 0.5rem !important;
+    min-width: auto !important;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .header-pollon--ref .header-menu-hamburger-pc:hover {
+    transform: scale(1.08);
+    background: transparent !important;
+  }
+
+  .header-pollon--ref .header-hamburger-pc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 26px;
+  }
+
+  .header-pollon--ref .header-hamburger-pc__line {
+    display: block;
+    height: 2.5px;
+    width: 100%;
+    background: var(--pollon-white);
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  .header-pollon--ref .header-menu-hamburger-pc[aria-expanded="true"] .header-hamburger-pc__line:nth-child(1) {
+    transform: translateY(7.5px) rotate(45deg);
+  }
+
+  .header-pollon--ref .header-menu-hamburger-pc[aria-expanded="true"] .header-hamburger-pc__line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .header-pollon--ref .header-menu-hamburger-pc[aria-expanded="true"] .header-hamburger-pc__line:nth-child(3) {
+    transform: translateY(-7.5px) rotate(-45deg);
+  }
+
+  .header-pollon--ref .header-menu-legacy {
+    display: none !important;
+  }
+}
+
+/* Base: separador y hamburguesa referencia solo en PC grande */
+.header-action-separator {
+  display: none;
+}
+
+.header-hamburger-pc {
+  display: none;
+}
+
+.header-menu-legacy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+/* PC compacto (1024–1366): carrito/menú estilo anterior */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .header-pollon--ref .header-cart-pc {
+    background: var(--pollon-white) !important;
+    color: var(--pollon-red) !important;
+    border-radius: 999px !important;
+    padding: 0.55rem 0.85rem !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important;
+    gap: 0.45rem;
+  }
+
+  .header-cart-text-sr {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    clip: auto !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--pollon-red);
+  }
+
+  .header-cart-svg-pc {
+    stroke: var(--pollon-red);
+    color: var(--pollon-red);
+  }
+
+  .header-pollon--ref .header-cart-badge-pc {
+    background: var(--pollon-red) !important;
+    color: var(--pollon-white) !important;
+  }
+
+  .header-pollon--ref .header-menu-hamburger-pc .header-hamburger-pc {
+    display: none;
+  }
+
+  .header-pollon--ref .header-menu-legacy {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+  }
+
+  .header-pollon--ref .menu-dd-btn.header-menu-hamburger-pc {
+    flex-direction: column !important;
+    gap: 0.2rem !important;
   }
 }
 

@@ -1150,6 +1150,10 @@ const hamburgerBtn = document.getElementById('hamburger-btn');
 const closeSidebar = document.getElementById('close-sidebar');
 const sidebarMenu = document.getElementById('sidebar-menu');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
+const menuDdBtnMobile = document.getElementById('menu-dd-btn-mobile');
+const menuDdPanelMobile = document.getElementById('menu-dd-panel-mobile');
+const menuDdCartMobile = document.getElementById('menu-dd-cart-mobile');
+const menuDdCartBadge = document.getElementById('menu-dd-cart-badge');
 // ✅ Botón MENÚ solo PC/Tablet abre el mismo sidebar
 const menuOpenDesktop = document.getElementById('menu-open-desktop');
   if (menuOpenDesktop) menuOpenDesktop.addEventListener('click', openSidebar);
@@ -1159,15 +1163,36 @@ function openSidebar() {
   if (sidebarMenu) sidebarMenu.style.transform = 'translateX(0)';
   if (sidebarOverlay) sidebarOverlay.classList.remove('hidden');
   if (hamburgerBtn) hamburgerBtn.setAttribute('aria-expanded', 'true');
+  if (menuDdBtnMobile) menuDdBtnMobile.setAttribute('aria-expanded', 'true');
+  if (menuDdPanelMobile) menuDdPanelMobile.classList.add('hidden');
+  document.body.classList.add('sidebar-open');
   document.body.style.overflow = 'hidden';
 }
 function closeSidebarMenu() {
   if (sidebarMenu) sidebarMenu.style.transform = 'translateX(-100%)';
   if (sidebarOverlay) sidebarOverlay.classList.add('hidden');
   if (hamburgerBtn) hamburgerBtn.setAttribute('aria-expanded', 'false');
-  document.body.style.overflow = 'auto';
+  if (menuDdBtnMobile) menuDdBtnMobile.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('sidebar-open');
+  document.body.style.overflow = '';
 }
-if (hamburgerBtn) hamburgerBtn.addEventListener('click', openSidebar);
+function isSidebarOpen() {
+  return !!(sidebarOverlay && !sidebarOverlay.classList.contains('hidden'));
+}
+function toggleSidebar() {
+  if (isSidebarOpen()) closeSidebarMenu();
+  else openSidebar();
+}
+function isDesktopHeader() {
+  return window.matchMedia('(min-width: 1024px)').matches;
+}
+if (hamburgerBtn) {
+  hamburgerBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleSidebar();
+  });
+}
 if (closeSidebar) closeSidebar.addEventListener('click', closeSidebarMenu);
 if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebarMenu);
 
@@ -1485,12 +1510,7 @@ if (menuDdBtn && menuDdPanel){
 }
 
 
-// ===== DROPDOWN MENÚ (CELULAR) =====
-const menuDdBtnMobile = document.getElementById('menu-dd-btn-mobile');
-const menuDdPanelMobile = document.getElementById('menu-dd-panel-mobile');
-const menuDdCartMobile = document.getElementById('menu-dd-cart-mobile');
-const menuDdCartBadge = document.getElementById('menu-dd-cart-badge');
-
+// ===== DROPDOWN MENÚ (PC grande) / Sidebar (PC pequeño) =====
 function openMenuDdMobile(){
   if (!menuDdPanelMobile || !menuDdBtnMobile) return;
   menuDdPanelMobile.classList.remove('hidden');
@@ -1503,20 +1523,33 @@ function closeMenuDdMobile(){
 }
 
 if (menuDdBtnMobile && menuDdPanelMobile){
-  // abrir/cerrar
+  menuDdBtnMobile.setAttribute('aria-haspopup', 'dialog');
+  menuDdBtnMobile.setAttribute('aria-controls', 'sidebar-menu');
+
   menuDdBtnMobile.addEventListener('click', (e) => {
+    e.preventDefault();
     e.stopPropagation();
+    if (isDesktopHeader()) {
+      toggleSidebar();
+      return;
+    }
     const isOpen = !menuDdPanelMobile.classList.contains('hidden');
     if (isOpen) closeMenuDdMobile();
     else openMenuDdMobile();
   });
 
-  // click afuera cierra
-  document.addEventListener('click', () => closeMenuDdMobile());
+  document.addEventListener('click', (e) => {
+    if (menuDdBtnMobile.contains(e.target)) return;
+    if (menuDdPanelMobile.contains(e.target)) return;
+    if (sidebarMenu && sidebarMenu.contains(e.target)) return;
+    closeMenuDdMobile();
+  });
 
-  // ESC cierra
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeMenuDdMobile();
+    if (e.key === 'Escape') {
+      closeMenuDdMobile();
+      closeSidebarMenu();
+    }
   });
 
   // click en categorías

@@ -137,18 +137,26 @@
             <span class="header-login-sub">Mi cuenta</span>
           </span>
         </a>
-        <button id="view-cart-desktop" class="btn-cart-pro header-btn-pedido" type="button">
-          <svg class="cart-icon-svg header-cart-icon-red" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-          <span>Ver Mi Pedido</span>
-          <span id="cart-badge-desktop" class="cart-badge-pro">0</span>
+        <button id="view-cart-desktop" class="btn-cart-pro header-cart-pc" type="button" aria-label="Ver mi pedido">
+          <svg class="header-cart-svg-pc" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          <span class="header-cart-text-sr">Ver Mi Pedido</span>
+          <span id="cart-badge-desktop" class="header-cart-badge-pc cart-badge-pro">0</span>
         </button>
+        <span class="header-action-separator" aria-hidden="true"></span>
         <div class="header-hamburger menu-dd-wrap">
-          <button id="menu-dd-btn-mobile" type="button" class="menu-dd-btn header-menu-btn-pc" aria-expanded="false">
-            <span class="header-menu-circle" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          <button id="menu-dd-btn-mobile" type="button" class="menu-dd-btn header-menu-hamburger-pc" aria-expanded="false" aria-label="Abrir menú de categorías" aria-controls="sidebar-menu">
+            <span class="header-hamburger-pc" aria-hidden="true">
+              <span class="header-hamburger-pc__line"></span>
+              <span class="header-hamburger-pc__line"></span>
+              <span class="header-hamburger-pc__line"></span>
             </span>
-            <span class="menu-dd-top">MENÚ</span>
-            <span class="menu-dd-caret">▾</span>
+            <span class="header-menu-legacy" aria-hidden="true">
+              <span class="header-menu-circle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+              </span>
+              <span class="menu-dd-top">MENÚ</span>
+              <span class="menu-dd-caret">▾</span>
+            </span>
           </button>
           <div id="menu-dd-panel-mobile" class="menu-dd-panel hidden" role="menu">
             <button id="menu-dd-cart-mobile" type="button" class="menu-dd-cart menu-dd-cart-pro">
