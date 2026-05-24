@@ -1516,10 +1516,22 @@ if (menuDdBtn && menuDdPanel){
 
 // ===== DROPDOWN MENÚ PC (categorías debajo del hamburguesa) =====
 let menuDdIgnoreOutside = false;
+let menuDdPortalWrap = null;
+
+function ensureMenuDdPanelPortal() {
+  if (!menuDdPanelMobile || !usesPcDropdownMenu()) return;
+  if (menuDdPanelMobile.parentElement === document.body) return;
+  if (!menuDdPortalWrap) {
+    menuDdPortalWrap = menuDdPanelMobile.parentElement;
+  }
+  document.body.appendChild(menuDdPanelMobile);
+}
 
 function positionMenuDdPanel() {
   if (!menuDdBtnMobile || !menuDdPanelMobile) return;
   if (menuDdPanelMobile.classList.contains('hidden')) return;
+
+  ensureMenuDdPanelPortal();
 
   const btnRect = menuDdBtnMobile.getBoundingClientRect();
   const panelWidth = 300;
@@ -1529,7 +1541,7 @@ function positionMenuDdPanel() {
   menuDdPanelMobile.style.left = 'auto';
   menuDdPanelMobile.style.right = `${Math.max(8, Math.round(window.innerWidth - btnRect.right))}px`;
   menuDdPanelMobile.style.width = `${panelWidth}px`;
-  menuDdPanelMobile.style.zIndex = '10000';
+  menuDdPanelMobile.style.zIndex = '10100';
 
   const caret = menuDdPanelMobile.querySelector('.menu-dd-panel-caret');
   if (caret) {
@@ -1543,9 +1555,11 @@ function positionMenuDdPanel() {
 function openMenuDdMobile() {
   if (!menuDdPanelMobile || !menuDdBtnMobile) return;
   closeSidebarMenu();
+  ensureMenuDdPanelPortal();
   menuDdPanelMobile.classList.remove('hidden');
   menuDdPanelMobile.classList.add('is-open');
   menuDdBtnMobile.setAttribute('aria-expanded', 'true');
+  document.body.classList.add('menu-dd-open');
   requestAnimationFrame(() => {
     positionMenuDdPanel();
     requestAnimationFrame(positionMenuDdPanel);
@@ -1557,6 +1571,7 @@ function closeMenuDdMobile() {
   menuDdPanelMobile.classList.add('hidden');
   menuDdPanelMobile.classList.remove('is-open');
   menuDdBtnMobile.setAttribute('aria-expanded', 'false');
+  document.body.classList.remove('menu-dd-open');
   menuDdPanelMobile.style.position = '';
   menuDdPanelMobile.style.top = '';
   menuDdPanelMobile.style.left = '';
@@ -1595,6 +1610,7 @@ if (menuDdBtnMobile && menuDdPanelMobile) {
   });
 
   window.addEventListener('resize', () => {
+    if (usesPcDropdownMenu()) ensureMenuDdPanelPortal();
     if (!menuDdPanelMobile.classList.contains('hidden')) positionMenuDdPanel();
   });
 
@@ -1639,6 +1655,8 @@ if (menuDdBtnMobile && menuDdPanelMobile) {
       closeMenuDdMobile();
     });
   }
+
+  if (usesPcDropdownMenu()) ensureMenuDdPanelPortal();
 }
 
 

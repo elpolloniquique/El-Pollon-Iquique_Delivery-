@@ -483,6 +483,27 @@ body.pollon-body {
     display: block !important;
     visibility: visible !important;
     pointer-events: auto !important;
+    position: fixed !important;
+    z-index: 10100 !important;
+  }
+
+  /* Panel en body: siempre delante del banner y hero */
+  body > #menu-dd-panel-mobile.menu-dd-panel--pc.is-open,
+  body > #menu-dd-panel-mobile.menu-dd-panel--pc:not(.hidden) {
+    display: block !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    position: fixed !important;
+    z-index: 10100 !important;
+  }
+
+  body.menu-dd-open .header-pollon--ref.header-fijo {
+    z-index: 10090 !important;
+  }
+
+  body.menu-dd-open #inicio,
+  body.menu-dd-open .hero-banner {
+    z-index: 1;
   }
 
   .menu-dd-panel-caret {
